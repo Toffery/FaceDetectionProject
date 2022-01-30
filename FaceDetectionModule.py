@@ -34,8 +34,8 @@ class FaceDetector():
         return img, bound_boxes
 
 
-fps_counter = []
 def main():
+    # 0, 1 etc - for web-cameras, 'your_video_path' - for videos
     cap = cv2.VideoCapture(0)
     prev_time = 0
     detector = FaceDetector()
@@ -46,11 +46,10 @@ def main():
 
         cur_time = time.time()
         fps = 1 / (cur_time - prev_time)
-        fps_counter.append(fps)
         prev_time = cur_time
         cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 3)
 
-        cv2.imshow('Dolboeb', img)
+        cv2.imshow('Window', img)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
