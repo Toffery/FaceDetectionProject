@@ -13,7 +13,9 @@ class FaceDetector():
         self.face_detect = self.mp_face_detect.FaceDetection()
 
     def find_faces(self, img, draw=True, draw_detection=False):
+        # Transform BGR image to RGB
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # Find faces on image
         self.results = self.face_detect.process(img_rgb)
         bound_boxes = []
 
@@ -24,10 +26,13 @@ class FaceDetector():
                         self.mp_draw.draw_detection(img, detection)
                     bounding_box_class = detection.location_data.relative_bounding_box
                     height, width, channels = img.shape
+                    # Calculate bounding box for visualization
                     bounding_box = int(bounding_box_class.xmin * width), int(bounding_box_class.ymin * height), \
                                    int(bounding_box_class.width * width), int(bounding_box_class.height * height)
                     bound_boxes.append([id, bounding_box, detection.score])
+                    # Put a rectangle on found face
                     cv2.rectangle(img, bounding_box, (0, 0, 255), 2)
+                    # Put a confidence score of found face
                     cv2.putText(img, f'{int(detection.score[0] * 100)}%',
                                 (bounding_box[0], bounding_box[1] - 20),
                                 cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
@@ -44,9 +49,11 @@ def main():
         success, img = cap.read()
         img, bboxes = detector.find_faces(img, draw=True, draw_detection=False)
 
+        # Calculate FPS
         cur_time = time.time()
         fps = 1 / (cur_time - prev_time)
         prev_time = cur_time
+        # Put an FPS on image
         cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 3)
 
         cv2.imshow('Window', img)
